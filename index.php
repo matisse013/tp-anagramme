@@ -1,6 +1,8 @@
 <?php
 require_once 'functions.php';
-requireLogin();
+
+// Accès libre au vérificateur (pas de requireLogin ici)
+$isLoggedIn = isLoggedIn();
 
 $string1 = '';
 $string2 = '';
@@ -18,15 +20,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $result = isAnagram($string1, $string2);
 
-        $stmt = $pdo->prepare(
-            'INSERT INTO verifications (user_id, string1, string2, is_anagram) VALUES (?, ?, ?, ?)'
-        );
-        $stmt->execute([
-            $_SESSION['user_id'],
-            $string1,
-            $string2,
-            $result ? 1 : 0,
-        ]);
+        // Enregistrement en base UNIQUEMENT si l'utilisateur est connecté
+        if ($isLoggedIn) {
+            $stmt = $pdo->prepare(
+                'INSERT INTO verifications (user_id, string1, string2, is_anagram) VALUES (?, ?, ?, ?)'
+            );
+            $stmt->execute([
+                $_SESSION['user_id'],
+                $string1,
+                $string2,
+                $result ? 1 : 0,
+            ]);
+        }
     }
 }
 
@@ -42,8 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="header">
         <a href="#" class="logo">Anagramme</a>
-        <span class="user-info">Bonjour, <?= htmlspecialchars($_SESSION['pseudo']) ?></span>
-        <a href="<?= BASE_URL ?>logout.php" class="btn-logout">Déconnexion</a>
+        <?php if ($isLoggedIn): ?>
+            <span class="user-info">Bonjour, <?= htmlspecialchars($_SESSION['pseudo']) ?></span>
+            <a href="<?= BASE_URL ?>logout.php" class="btn-logout">Déconnexion</a>
+        <?php else: ?>
+            <a href="<?= BASE_URL ?>login.php" class="btn-connect">Se connecter</a>
+        <?php endif; ?>
     </div>
 
     <div class="container">
@@ -83,10 +92,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ? '✓ Les deux chaînes sont des <strong>anagrammes</strong>'
                     : '✗ Les deux chaînes ne sont <strong>pas des anagrammes</strong>' ?>
             </div>
+
+            <?php if (!$isLoggedIn): ?>
+                <div class="alert" style="background:#e2e8f0; color:#475569; border:1px solid #cbd5e1; margin-top:15px;">
+                    Connectez-vous pour <strong>enregistrer</strong> cette vérification et consulter votre <strong>historique</strong>.
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
 
         <div class="actions">
-            <a href="<?= BASE_URL ?>history.php">Voir mon historique des vérifications</a>
+            <?php if ($isLoggedIn): ?>
+                <a href="<?= BASE_URL ?>history.php">Voir mon historique des vérifications</a>
+            <?php else: ?>
+                <a href="<?= BASE_URL ?>login.php">Se connecter pour accéder à l'historique</a>
+            <?php endif; ?>
         </div>
     </div>
 </body>
