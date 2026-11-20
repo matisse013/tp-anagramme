@@ -176,3 +176,4 @@ if ($isLoggedIn) {
     </div>
 </body>
 </html>
+<!-- Application TP vérificateur d'anagrammes -->
