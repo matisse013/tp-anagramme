@@ -104,13 +104,27 @@ body {
 /* ——— Conteneur principal ——— */
 
 .container {
-    max-width: 560px;
+    max-width: 640px;
     margin: 0 auto;
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: 40px;
+}
+
+.split-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+.left-panel {
+    min-width: 0;
+}
+
+.right-panel {
+    min-width: 0;
 }
 
 h1 {
@@ -423,6 +437,67 @@ tr:hover {
 .status-badge.error {
     background: var(--danger-bg);
     color: var(--danger);
+}
+
+.history-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+}
+
+.history-card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    color: var(--text);
+}
+
+.history-empty {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    padding: 40px 20px;
+}
+
+.history-empty a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.history-empty a:hover {
+    text-decoration: underline;
+}
+
+/* Tableau historique adapté au panneau droit */
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.history-table th, .history-table td {
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    text-align: left;
+}
+
+.history-table th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+}
+
+.history-table tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+.history-table tr:hover {
+    background: #f1f5f9;
 }
 
 /* ——— Pied de page ——— */
