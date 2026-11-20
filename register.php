@@ -23,12 +23,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->fetch()) {
             $error = 'Ce pseudonyme est déjà utilisé.';
         } else {
-            $reversedPseudo = strrev($pseudo);
             try {
                 $pdo->beginTransaction();
+
+                // Un seul compte (plus de reverse)
+                $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
                 $stmt = $pdo->prepare('INSERT INTO users (pseudo, password) VALUES (?, ?)');
-                $stmt->execute([$pseudo, $password]);
-                $stmt->execute([$reversedPseudo, $password]);
+                $stmt->execute([$pseudo, $passwordHash]);
+
                 $pdo->commit();
                 $success = 'Compte créé avec succès. Vous pouvez vous connecter.';
             } catch (PDOException $e) {
@@ -72,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="field-wrapper">
                         <input type="text" id="pseudo" name="pseudo" required maxlength="50"
                                class="field-input"
-                               placeholder="ex: matis26"
+                               placeholder="ex: metisse_flow"
                                value="<?= htmlspecialchars($_POST['pseudo'] ?? '') ?>">
                     </div>
                 </div>

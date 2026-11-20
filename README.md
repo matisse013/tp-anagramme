@@ -43,13 +43,13 @@ Ouvrez votre navigateur à l'adresse :
 http://localhost/tp-anagramme/index.php
 ```
 
-## 🔐 Règles spécifiques du TP respectées
+## 🔐 Sécurité et comptes
 
 | Règle | Implémentation |
 |-------|----------------|
-| Mot de passe non hashé | Storé en clair dans la table `users` |
-| Double compte à l'inscription | Création de 2 lignes : le pseudo saisi et son inverse (`strrev`), même mot de passe |
-| Suppression à la déconnexion | L'utilisateur et tout son historique sont supprimés de la BDD quand il se déconnecte |
+| Mot de passe hashé | Stocké avec `password_hash()` (PASSWORD_DEFAULT), jamais en clair |
+| Un seul compte | Création d'une seule ligne par inscription (plus de compte reverse) |
+| Déconnexion simple | Destruction de la session uniquement, le compte reste en BDD |
 | Historique personnel | Chaque vérification est liée à l'utilisateur connecté (`user_id`) |
 
 ## ✅ Fonctionnalités implémentées

@@ -14,11 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($pseudo === '' || $password === '') {
         $error = 'Veuillez remplir tous les champs.';
     } else {
-        $stmt = $pdo->prepare('SELECT id, pseudo FROM users WHERE pseudo = ? AND password = ?');
-        $stmt->execute([$pseudo, $password]);
+        $stmt = $pdo->prepare('SELECT id, pseudo, password FROM users WHERE pseudo = ?');
+        $stmt->execute([$pseudo]);
         $user = $stmt->fetch();
 
-        if ($user) {
+        if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['pseudo'] = $user['pseudo'];
             redirect(BASE_URL . 'index.php');

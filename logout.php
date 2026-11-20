@@ -1,27 +1,9 @@
 <?php
 require_once 'functions.php';
 
-// Consigne du TP : la déconnexion entraîne la suppression de l'utilisateur de la base de données
+// Déconnexion simple : destruction de la session uniquement
+// Le compte utilisateur reste dans la base de données (conforme à la section 4.6 du TP)
 if (isLoggedIn()) {
-    $userId = $_SESSION['user_id'];
-
-    try {
-        $pdo->beginTransaction();
-
-        // Supprimer l'historique des vérifications de l'utilisateur
-        $stmt = $pdo->prepare('DELETE FROM verifications WHERE user_id = ?');
-        $stmt->execute([$userId]);
-
-        // Supprimer l'utilisateur
-        $stmt = $pdo->prepare('DELETE FROM users WHERE id = ?');
-        $stmt->execute([$userId]);
-
-        $pdo->commit();
-    } catch (PDOException $e) {
-        $pdo->rollBack();
-        // On continue quand même pour détruire la session
-    }
-
     session_destroy();
 }
 
